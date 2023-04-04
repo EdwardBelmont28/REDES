@@ -14,17 +14,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
     sockets_lista = [server_socket]
 
     while True:
-        read_sockets, _, _ = select.select(sockets_lista, [], [])
+        read_sockets = select.select(sockets_lista, [], [])
         for socket in read_sockets:
             if socket == server_socket:
                 client_socket, client_addr = server_socket.accept()
                 sockets_lista.append(client_socket)
                 print('Cliente conectado:', client_addr)
             else:
-                data = socket.recv(BUFFER_SIZE)
                 if data:
                     print('Recibiendo del cliente', socket.name(), ':', data.decode())
                 else:
                     socket.close()
                     sockets_lista.remove(socket)
-                    print('Cliente desconectado:', socket.name())
